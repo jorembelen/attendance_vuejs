@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Department;
 
 class EmployeeController extends Controller
 {
@@ -15,6 +16,8 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+        $department = Department::all();
+
         $employee =  Employee::latest()->paginate(10);
 
         return $employee;

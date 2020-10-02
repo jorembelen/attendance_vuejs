@@ -73,12 +73,12 @@
               <has-error :form="form" field="name"></has-error>
           </div>
           <div class="form-group">
-              <select v-model="form.department" type="text" name="department"
+              <select type="text" name="department" id="department" v-model="form.department"
                   class="form-control" :class="{ 'is-invalid': form.errors.has('department') }">
                   <option value="">Select Department</option>
-                  <option value="HR">HR</option>
-                  <option value="IT">IT</option>
-                  <option value="Admin">Admin</option>
+                  <option v-for="department in departments"
+                   :key="department.dep_name">{{department.dep_name}}
+                   </option>
                   </select>
               <has-error :form="form" field="department"></has-error>
           </div>
@@ -86,9 +86,9 @@
               <select v-model="form.position" type="text" name="position"
                   class="form-control" :class="{ 'is-invalid': form.errors.has('position') }">
                   <option value="">Select Position</option>
-                  <option value="Clerk">Clerk</option>
-                  <option value="HR Manager">HR Manager</option>
-                  <option value="IT - Support">IT - Support</option>
+                  <option v-for="position in positions"
+                   :key="position.pos_name">{{position.pos_name}}
+                   </option>
                   </select>
               <has-error :form="form" field="position"></has-error>
           </div>
@@ -108,8 +108,9 @@
               <select v-model="form.checkIn" name="checkIn"
                   class="form-control" :class="{ 'is-invalid': form.errors.has('checkIn') }">
                   <option value="">Select Late Time In Rule</option>
-                  <option value="07:40:00">Late Time In Rule - 7:40</option>
-                  <option value="10:40:00">Late Time In Rule - 10:40</option>
+                   <option v-for="checkIn in checkIns"
+                   :key="checkIn.checkIn_time">{{checkIn.checkIn_time}}
+                   </option>
                   </select>
               <has-error :form="form" field="checkIn"></has-error>
           </div>
@@ -117,7 +118,9 @@
               <select v-model="form.checkOut" type="text" name="checkOut"
                   class="form-control" :class="{ 'is-invalid': form.errors.has('checkOut') }">
                   <option value="">Select Early Time Out Rule</option>
-                  <option value="17:20:00">Early Time Out Rule - 17:20</option>
+                   <option v-for="checkOut in checkOuts"
+                   :key="checkOut.checkOut_time">{{checkOut.checkOut_time}}
+                   </option>
                   </select>
               <has-error :form="form" field="checkOut"></has-error>
           </div>
@@ -143,6 +146,10 @@ import Form from 'vform';
     export default {
         data() {
             return {
+                departments: null,
+                positions: null,
+                checkIns: null,
+                checkOuts: null,
                 editmode: false,
                 employees: {},
                 form: new Form({
@@ -158,6 +165,21 @@ import Form from 'vform';
                 })
             }
         },
+        mounted(){
+            axios.get('api/department').then(response => {
+              this.departments = response.data.data;
+            }),
+             axios.get('api/position').then(response => {
+              this.positions = response.data.data;
+            }),
+             axios.get('api/checkIn').then(response => {
+              this.checkIns = response.data.data;
+            }),
+             axios.get('api/checkOut').then(response => {
+              this.checkOuts = response.data.data;
+            })
+        },
+      
         methods: {
           updateEmployee() {
             this.$Progress.start();
